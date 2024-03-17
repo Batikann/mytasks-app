@@ -22,3 +22,11 @@ export const headerLinks = [
     icon: ClipboardList,
   },
 ]
+
+export const taskDefaultValues = {
+  title: '',
+  description: '',
+  date: new Date(),
+  isCompleted: false,
+  isImportant: false,
+}
