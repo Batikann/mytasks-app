@@ -4,6 +4,7 @@ import './globals.css'
 import { Providers } from '@/components/shared/Provider'
 import { ClerkProvider } from '@clerk/nextjs'
 import { Toaster } from '@/components/ui/toaster'
+import NextTopLoader from 'nextjs-toploader'
 const nunito = Nunito({
   weight: ['400', '500', '600', '700', '800'],
   subsets: ['latin'],
@@ -23,6 +24,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={nunito.className}>
         <ClerkProvider>
+          <NextTopLoader />
           <Providers>{children}</Providers>
           <Toaster />
         </ClerkProvider>
