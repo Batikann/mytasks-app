@@ -5,6 +5,7 @@ import { Providers } from '@/components/shared/Provider'
 import { ClerkProvider } from '@clerk/nextjs'
 import { Toaster } from '@/components/ui/toaster'
 import NextTopLoader from 'nextjs-toploader'
+import { GlobalProvider } from '@/context/globalProvider'
 const nunito = Nunito({
   weight: ['400', '500', '600', '700', '800'],
   subsets: ['latin'],
@@ -23,11 +24,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={nunito.className}>
-        <ClerkProvider>
-          <NextTopLoader />
-          <Providers>{children}</Providers>
-          <Toaster />
-        </ClerkProvider>
+        <GlobalProvider>
+          <ClerkProvider>
+            <NextTopLoader
+              height={2}
+              color="red"
+              easing="cubic-bezier(.0.53,0.21,0,.0.1)"
+              showSpinner={false}
+            />
+            <Providers>{children}</Providers>
+            <Toaster />
+          </ClerkProvider>
+        </GlobalProvider>
       </body>
     </html>
   )

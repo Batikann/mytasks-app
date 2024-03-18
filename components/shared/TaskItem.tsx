@@ -1,6 +1,12 @@
-import { FilePenLine, Trash } from 'lucide-react'
+'use client'
+
+import { FilePenLine, Ghost, Trash } from 'lucide-react'
 import { Button } from '../ui/button'
 import formatDate from '@/utils/formatDate'
+import { toast } from '../ui/use-toast'
+import axios from 'axios'
+import { useRouter } from 'next/navigation'
+import { useGlobalState } from '@/context/globalProvider'
 
 export interface TaskItemProps {
   task: {
@@ -16,25 +22,42 @@ export interface TaskItemProps {
   }
 }
 
+export interface UpdateItemProps {
+  id: string
+  isCompleted: boolean
+}
+
 const TaskItem = ({ task }: TaskItemProps) => {
+  const { updateTask, deleteTask } = useGlobalState()
+
   return (
-    <div className="border rounded-lg  w-full p-4 flex flex-col gap-2  border-gray-700 justify-between">
+    <div className="border rounded-lg  w-full p-4 flex flex-col gap-5  border-gray-700 justify-between">
       <h2 className="uppercase font-bold text-xl">{task.title}</h2>
       <p>{task.description}</p>
       <dt className="font-medium">{formatDate(task.date)}</dt>
       <div className="flex items-center justify-between">
-        <span
+        <Button
+          onClick={() => {
+            const val = {
+              id: task.id,
+              isCompleted: !task.isCompleted,
+            }
+            updateTask(val)
+          }}
+          variant={'ghost'}
           className={` p-1 px-2 text-sm font-semibold rounded-md text-white ${
-            task.isCompleted ? 'bg-green-600' : 'bg-red-600'
+            task.isCompleted
+              ? 'bg-green-600 hover:bg-green-500'
+              : 'bg-red-600 hover:bg-red-500'
           }`}
         >
           {task.isCompleted ? 'Completed' : 'Not Completed'}
-        </span>
+        </Button>
         <div className="flex items-center ">
           <Button variant={'ghost'}>
             <FilePenLine />
           </Button>
-          <Button variant={'ghost'}>
+          <Button onClick={() => deleteTask(task.id)} variant={'ghost'}>
             <Trash />
           </Button>
         </div>

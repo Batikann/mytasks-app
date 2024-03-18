@@ -51,16 +51,23 @@ export async function GET(req: Request) {
 
 export async function PUT(req: Request) {
   try {
+    const { userId } = auth()
+    const { isCompleted, id } = await req.json()
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized', status: 401 })
+    }
+    const task = await prisma.task.update({
+      where: {
+        id,
+      },
+      data: {
+        isCompleted,
+      },
+    })
+
+    return NextResponse.json(task)
   } catch (error) {
     console.log('Error UPDATING Task: ', error)
     return NextResponse.json({ error: 'error Update Task', status: 500 })
-  }
-}
-
-export async function DELETE(req: Request) {
-  try {
-  } catch (error) {
-    console.log('Error DELETING Task: ', error)
-    return NextResponse.json({ error: 'error Delete Task', status: 500 })
   }
 }

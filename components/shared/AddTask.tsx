@@ -41,8 +41,9 @@ import { Checkbox } from '../ui/checkbox'
 import { toast } from '../ui/use-toast'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useGlobalState } from '@/context/globalProvider'
 const AddTask = () => {
-  const router = useRouter()
+  const { getAllTasks } = useGlobalState()
   const [open, setOpen] = useState(false)
   const form = useForm<z.infer<typeof taskFormSchema>>({
     resolver: zodResolver(taskFormSchema),
@@ -61,7 +62,7 @@ const AddTask = () => {
         description: 'Task created successfully.',
       })
       form.reset()
-      router.refresh()
+      getAllTasks()
       setOpen(false)
     } catch (error) {
       toast({
