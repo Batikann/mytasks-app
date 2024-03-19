@@ -1,13 +1,10 @@
 'use client'
-
-import { CalendarIcon, Plus } from 'lucide-react'
+import { CalendarIcon, FilePenLine, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -39,49 +36,68 @@ import { cn } from '@/lib/utils'
 import { format } from 'date-fns'
 import { Checkbox } from '../ui/checkbox'
 import { toast } from '../ui/use-toast'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import React, { useEffect, useState } from 'react'
 import { useGlobalState } from '@/context/globalProvider'
-const AddTask = () => {
-  const { getAllTasks } = useGlobalState()
+
+type TaskFormProps = {
+  type: 'Create' | 'Update'
+  id?: string
+  title?: string
+}
+
+const TaskForm = ({ type, id, title }: TaskFormProps) => {
+  const { getAllTasks, getTaskById, taskItem } = useGlobalState()
   const [open, setOpen] = useState(false)
+
+  const initialValues = type === 'Update' ? taskItem : taskDefaultValues
+
   const form = useForm<z.infer<typeof taskFormSchema>>({
     resolver: zodResolver(taskFormSchema),
-    defaultValues: taskDefaultValues,
+    defaultValues: initialValues,
   })
 
   async function onSubmit(values: z.infer<typeof taskFormSchema>) {
-    try {
-      const res = await axios.post('/api/tasks', values)
-      if (res.data.error) {
+    if (type === 'Create') {
+      try {
+        const res = await axios.post('/api/tasks', values)
+        if (res.data.error) {
+          toast({
+            description: `${res.data.error}`,
+          })
+        }
         toast({
-          description: `${res.data.error}`,
+          description: 'Task created successfully.',
+        })
+        form.reset()
+        getAllTasks()
+        setOpen(false)
+      } catch (error) {
+        toast({
+          description: 'Something went wrong.',
         })
       }
-      toast({
-        description: 'Task created successfully.',
-      })
-      form.reset()
-      getAllTasks()
-      setOpen(false)
-    } catch (error) {
-      toast({
-        description: 'Something went wrong.',
-      })
     }
   }
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         asChild
-        className="border border-dashed rounded-lg border-gray-500 flex items-center justify-center w-full h-full "
+        className={`${
+          title && 'border border-dashed rounded-lg border-gray-500'
+        } flex items-center justify-center w-full h-full`}
       >
         <Button variant="ghost">
           <div className=" flex items-center justify-center">
-            <div className="flex items-center gap-x-2">
-              <Plus />
-              <p>Add New Task!</p>
-            </div>
+            {title ? (
+              <>
+                <div className="flex items-center gap-x-2">
+                  <Plus />
+                  <p>{title}</p>
+                </div>
+              </>
+            ) : (
+              <FilePenLine onClick={() => getTaskById(id)} />
+            )}
           </div>
         </Button>
       </DialogTrigger>
@@ -235,4 +251,4 @@ const AddTask = () => {
     </Dialog>
   )
 }
-export default AddTask
+export default TaskForm

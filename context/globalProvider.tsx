@@ -25,6 +25,13 @@ export const GlobalContext = createContext<any>(null)
 
 export const GlobalProvider = ({ children }: any) => {
   const [tasks, setTasks] = useState<TaskItems[]>([])
+  const [taskItem, setTaskItem] = useState({
+    title: '',
+    description: '',
+    date: '',
+    isCompleted: false,
+    isImportant: false,
+  })
   const getAllTasks = async () => {
     try {
       const res = await axios.get('/api/tasks')
@@ -65,6 +72,24 @@ export const GlobalProvider = ({ children }: any) => {
     }
   }
 
+  const getTaskById = async (id: string) => {
+    try {
+      const res = await axios.get(`/api/tasks/${id}`)
+      await setTaskItem({
+        title: res.data[0].title,
+        description: res.data[0].description,
+        date: res.data[0].date,
+        isCompleted: res.data[0].isCompleted,
+        isImportant: res.data[0].isImportant,
+      })
+    } catch (error) {
+      console.log(error)
+      toast({
+        description: 'Something went wrong!',
+      })
+    }
+  }
+
   useEffect(() => {
     getAllTasks()
   }, [setTasks])
@@ -83,6 +108,8 @@ export const GlobalProvider = ({ children }: any) => {
         getAllTasks,
         updateTask,
         deleteTask,
+        getTaskById,
+        taskItem,
       }}
     >
       {children}

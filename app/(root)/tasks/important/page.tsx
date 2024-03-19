@@ -1,6 +1,6 @@
 'use client'
 
-import AddTask from '@/components/shared/AddTask'
+import TaskForm from '@/components/shared/TaskForm'
 import TaskItem from '@/components/shared/TaskItem'
 import { Task } from '@/components/shared/Tasks'
 import { useGlobalState } from '@/context/globalProvider'
@@ -19,7 +19,7 @@ const ImportantPage = () => {
                 return <TaskItem key={task.id} task={task} />
               })
             : 'Loading....'}
-          <AddTask />
+          <TaskForm type="Create" title="Add New Task!" />
         </div>
       </div>
     </div>

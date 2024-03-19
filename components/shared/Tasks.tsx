@@ -1,6 +1,6 @@
 'use client'
 
-import AddTask from './AddTask'
+import TaskForm from './TaskForm'
 import TaskItem, { TaskItemProps } from './TaskItem'
 import { useGlobalState } from '@/context/globalProvider'
 
@@ -28,7 +28,7 @@ const Tasks = () => {
               return <TaskItem key={task.id} task={task} />
             })
           : 'Loading....'}
-        <AddTask />
+        <TaskForm type="Create" title="Add New Task!" />
       </div>
     </div>
   )

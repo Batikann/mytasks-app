@@ -7,6 +7,8 @@ import { toast } from '../ui/use-toast'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { useGlobalState } from '@/context/globalProvider'
+import TaskForm from './TaskForm'
+import { useState } from 'react'
 
 export interface TaskItemProps {
   task: {
@@ -54,9 +56,7 @@ const TaskItem = ({ task }: TaskItemProps) => {
           {task.isCompleted ? 'Completed' : 'Not Completed'}
         </Button>
         <div className="flex items-center ">
-          <Button variant={'ghost'}>
-            <FilePenLine />
-          </Button>
+          {/* <TaskForm type="Update" id={task.id} /> */}
           <Button onClick={() => deleteTask(task.id)} variant={'ghost'}>
             <Trash />
           </Button>
